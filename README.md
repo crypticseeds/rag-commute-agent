@@ -1,20 +1,51 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+# Work Transport & Document Assistant
 
-This contains everything you need to run your app locally.
+A comprehensive web application for calculating work transport costs and interacting with documents using AI-powered chat. This full-stack application provides an intuitive interface for managing TFL (Transport for London) expenses and document analysis.
 
-View your app in AI Studio: https://ai.studio/apps/temp/1
+## Overview
 
-## Run Locally
+This project consists of two main components:
 
-**Prerequisites:**  Node.js
+- **Frontend**: React-based web application hosted on Vercel
+- **Backend**: Python-based API service with LangGraph-powered AI capabilities
 
+## Features
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- 🚇 **Transport Cost Calculator**: Interactive calendar and invoice upload for TFL expense tracking
+- 💬 **Document Assistant**: AI-powered RAG chat for document analysis
+- 🎨 **Modern UI**: Clean, responsive design with real-time feedback
+
+## Tech Stack
+
+- **Frontend**: React 19 + TypeScript + Vite
+- **Backend**: Python with LangGraph, LangFlow, and Langfuse
+- **Secrets Management**: Doppler
+- **Hosting**: Vercel (frontend)
+
+## Quick Start
+
+### Frontend
+See [frontend/README.md](frontend/README.md) for detailed setup instructions.
+
+### Backend
+See [backend/README.md](backend/README.md) for detailed setup instructions.
+
+## Project Structure
+
+```
+rag-commute-agent/
+├── frontend/          # React frontend application
+├── backend/           # Python backend API
+└── README.md          # This file
+```
+
+## Development Status
+
+- ✅ Frontend: Functional with mock implementations
+- 🚧 Backend: Template/boilerplate in development
+
+---
+
+Built by Femi Akinlotan + AI Assistant  
+Powered by LangGraph + Langfuse
