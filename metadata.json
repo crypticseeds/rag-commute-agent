@@ -1,0 +1,5 @@
+
+{
+  "name": "Work Transport & Document Assistant",
+  "description": "An application to calculate TFL transport costs from invoices and chat with uploaded documents using a LangGraph-powered RAG system."
+}
