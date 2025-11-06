@@ -1,7 +1,15 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "rag-commute-agent"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "ipykernel>=7.1.0",
+    "langchain>=1.0.3",
+    "langfuse>=3.9.0",
+    "langgraph>=1.0.2",
+    "langsmith>=0.4.41",
+    "opik>=1.8.101",
+    "slowapi>=0.1.9",
+]

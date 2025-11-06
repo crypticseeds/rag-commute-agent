@@ -13,7 +13,9 @@ This backend service powers the Work Transport & Document Assistant application 
 - LangGraph-powered transport cost calculation
 - RAG (Retrieval-Augmented Generation) document analysis
 - API endpoints for file processing and chat functionality
-- Integration with the frontend React application
+- Streaming responses for real-time chat interaction
+- Integration with the frontend React application (hosted on Vercel)
+- Backend deployment on AWS or Digital Ocean
 
 ## Tech Stack
 
@@ -109,11 +111,27 @@ This project uses **Doppler** for secrets management. No `.env` files are needed
 
 Configure these in Doppler:
 
-- Backend API configuration
-- LangGraph/LangFlow API keys
-- Langfuse API keys and secrets
-- Database connection strings (if applicable)
-- Other service credentials
+- **API Configuration**:
+  - `FRONTEND_URL`: Frontend URL (Vercel deployment URL)
+  - `API_HOST`: API host (default: 0.0.0.0)
+  - `API_PORT`: API port (default: 8000)
+  
+- **LLM & AI Services**:
+  - `OPENAI_API_KEY`: OpenAI API key
+  - `LANGSMITH_API_KEY`: LangSmith API key
+  - `LANGSMITH_TRACING`: Enable/disable tracing (true/false)
+  - `LANGSMITH_PROJECT`: LangSmith project name
+  - `OPIK_API_KEY`: (Optional) Opik API key
+  
+- **Vector Database**:
+  - `QDRANT_URL`: Qdrant Cloud cluster URL
+  - `QDRANT_API_KEY`: Qdrant Cloud API key
+  
+- **Storage** (Future - Post-MVP):
+  - `AWS_ACCESS_KEY_ID`: (Future) For S3 storage
+  - `AWS_SECRET_ACCESS_KEY`: (Future) For S3 storage
+  - `AWS_S3_BUCKET`: (Future) S3 bucket name
+  - Or Digital Ocean Spaces credentials (S3-compatible)
 
 ## Project Structure
 
@@ -187,10 +205,12 @@ pyright .
 
 ### API Endpoints
 
-- File upload endpoints
-- Chat endpoints with streaming support
-- Transport calculation endpoints
-- Health check and status endpoints
+- **File upload endpoints**: Process and store invoice/document files
+- **Chat endpoints**: Streaming responses for real-time interaction
+- **Transport calculation endpoints**: Calculate commute costs based on selected dates
+- **Health check endpoint**: Monitor API status
+
+**Note**: All endpoints support streaming responses for chat functionality
 
 ## Observability
 
@@ -206,15 +226,30 @@ pyright .
 - All secrets are managed through Doppler
 - No `.env` files are committed to the repository
 - Environment variables are securely injected at runtime
+- **Rate Limiting**: Implemented to prevent bot attacks and excessive usage
+  - API endpoints have rate limits based on IP address
+  - Limits are configurable per endpoint
+  - Rate limit headers included in responses
 
 ## Deployment
 
 ### Production Setup
 
-1. Configure Doppler secrets for production environment
-2. Set up deployment pipeline (e.g., Docker, cloud functions)
-3. Ensure Doppler integration with deployment platform
-4. Configure health checks and monitoring
+**Backend Hosting**: AWS or Digital Ocean
+- Configure Doppler secrets for production environment
+- Set up deployment (containerized or serverless)
+- Ensure Doppler integration with deployment platform
+- Configure health checks and monitoring
+- Set `FRONTEND_URL` environment variable to Vercel frontend URL
+
+**Frontend Hosting**: Vercel
+- Frontend will connect to backend using base URL environment variable
+- Configure backend API base URL in frontend environment variables
+
+**File Storage** (Future Enhancement):
+- Files will be stored on S3 (AWS) or S3-compatible storage (Digital Ocean Spaces)
+- Implementation will be added post-MVP
+- Currently, files are processed in-memory for MVP
 
 ## Testing
 
@@ -224,15 +259,57 @@ Run tests using pytest:
 pytest
 ```
 
+## Rate Limiting
+
+The API implements rate limiting to prevent abuse and excessive usage:
+
+### Current Rate Limits
+
+- **Health Check**: 100 requests per minute
+- **Invoice Upload**: 10 uploads per minute per IP
+- **Cost Calculation**: 20 calculations per minute per IP
+- **Chat**: 30 messages per minute per IP
+
+### Rate Limit Behavior
+
+- Limits are applied per IP address
+- Rate limit headers are included in responses:
+  - `X-RateLimit-Limit`: Maximum requests allowed
+  - `X-RateLimit-Remaining`: Remaining requests in current window
+  - `X-RateLimit-Reset`: Time when the rate limit resets
+- When limit is exceeded, returns `429 Too Many Requests` with error message
+
+### Customizing Rate Limits
+
+Rate limits can be adjusted in `api.py` by modifying the `@limiter.limit()` decorator on each endpoint.
+
+### Future Enhancements
+
+- User-based rate limiting (requires authentication)
+- Redis-backed rate limiting for distributed systems
+- Dynamic rate limiting based on usage patterns
+
 ## Future Enhancements
 
+### Authentication & Authorization
+- **User authentication**: Will be added post-MVP to avoid complexity
+- JWT-based authentication
+- User-specific data isolation
+- Role-based access control
+
+### Storage & Infrastructure
+- **S3/S3-compatible file storage**: AWS S3 or Digital Ocean Spaces
+- Persistent file storage for invoices and documents
+- File management and cleanup policies
+
+### Core Features
 - Complete LangGraph workflow implementation
 - LangFlow integration for visual workflow design
 - Opikk integration for additional AI capabilities
 - LangSmith integration for enhanced monitoring
 - Database integration for data persistence
-- Authentication and authorization
-- Rate limiting and API security
+- Advanced memory management
+- Multi-user support with proper data isolation
 
 ---
 
